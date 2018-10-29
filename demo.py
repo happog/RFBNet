@@ -146,7 +146,7 @@ net.load_state_dict(new_state_dict)
 net.eval()
 if args.cuda:
     net = net.cuda()
-    cudnn.benchmark = True
+    # cudnn.benchmark = True
 else:
     net = net.cpu()
 print('Finished loading model!')
@@ -164,7 +164,6 @@ scores = scores.cpu().numpy()
 # scale each detection back up to the image
 bboxes = []
 for j in range(1, numclass):
-    max_ = max(scores[:, j])
     inds = np.where(scores[:, j] > 0.2)[0]      #conf > 0.6
     if inds is None:
         continue
@@ -177,9 +176,6 @@ for j in range(1, numclass):
     c_dets = c_dets[keep, :]
     c_bboxes=c_dets[:, :5]
     bboxes.append(c_bboxes)
-#     for bbox in c_bboxes:
-#         cv2.rectangle(img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255,0,0), 2)
-# cv2.imwrite("my_test.png",img)
 end = time.time()
 print('detection: load model in %2.2f sec and predict finished in %2.2f sec'%(start-start_load, end-start))
 
